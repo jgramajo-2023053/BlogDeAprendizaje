@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-export const MakeComent = ({ postId }) => {
+export const MakeComent = ({ postId, onCommentMade }) => {
   const [user, setUser] = useState('')
   const [content, setContent] = useState('')
 
@@ -26,9 +26,9 @@ export const MakeComent = ({ postId }) => {
 
       const data = await res.json()
       alert(data.message)
-      window.location.reload()
       setUser('')
       setContent('')
+      onCommentMade()
     } catch (err) {
       console.error('Error al comentar:', err)
       alert('Error al crear el comentario')

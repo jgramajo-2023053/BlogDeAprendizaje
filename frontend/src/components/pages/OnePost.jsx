@@ -7,6 +7,7 @@ import { Coments } from './Coments.jsx'
 export const OnePost = () => {
   const { id } = useParams()
   const [post, setPost] = useState(null)
+  const [refreshComments, setRefreshComments] = useState(false)
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -18,6 +19,8 @@ export const OnePost = () => {
         console.error('Error al obtener el post:', err)
       }
     }
+
+    
 
     fetchPost()
   }, [id])
@@ -33,8 +36,8 @@ export const OnePost = () => {
         <p>{post.text}</p>
       </Post>
       <Coment>
-        <MakeComent postId={post._id}/>
-        <Coments postId={post._id} />
+        <MakeComent postId={post._id} onCommentMade={() => setRefreshComments(prev => !prev)} />
+        <Coments postId={post._id} refreshTrigger={refreshComments} />
       </Coment>
     </Container>
   )
@@ -57,13 +60,14 @@ const Post = styled.div`
 `
 
 const Coment = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    margin: 2%;
-    width: 40%;
-    border-radius: 15px;
-    background-color:rgb(27, 27, 27);
-    max-height: 800px;       /* Altura máxima */
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin: 2%;
+  width: 40%;
+  border-radius: 15px;
+  background-color:rgb(27, 27, 27);
+  max-height: 800px;       /* Altura máxima */
   overflow-y: auto;  
+  overflow-x: hidden; 
 `

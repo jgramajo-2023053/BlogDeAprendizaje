@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-export const Coments = ({ postId }) => {
+export const Coments = ({ postId, refreshTrigger }) => {
   const [comments, setComments] = useState([])
 
   useEffect(() => {
@@ -9,7 +9,7 @@ export const Coments = ({ postId }) => {
       try {
         const res = await fetch(`http://localhost:2636/api/coments/post/${postId}`)
         const data = await res.json()
-        console.log('🗨️ Comentarios recibidos:', data)
+        console.log('Comentarios recibidos:', data)
         setComments(Array.isArray(data.coments) ? data.coments : [])
       } catch (err) {
         console.error('Error al obtener los comentarios:', err)
@@ -17,18 +17,21 @@ export const Coments = ({ postId }) => {
     }
 
     if (postId) fetchComments()
-  }, [postId])
+  }, [postId, refreshTrigger])
 
   return (
     <Container>
-      <h2>Comentarios del post</h2>
+      <h2>Comentarios del post ({comments.length})</h2>
       {comments.length === 0 ? (
         <p>No hay comentarios aún.</p>
       ) : (
         comments.map((comment) => (
           <ComentCard key={comment._id}>
-            <p><strong>Usuario:</strong> {comment.user}</p>
-            <p><strong>Fecha:</strong> {new Date(comment.date).toLocaleString()}</p>
+            <Top>
+              <p><strong>{comment.user}</strong></p>
+              <p><strong>Fecha:</strong> {new Date(comment.date).toLocaleString()}</p>
+            </Top>
+            
             <p>{comment.content}</p>
           </ComentCard>
         ))
@@ -51,4 +54,13 @@ const ComentCard = styled.div`
   padding: 1rem;
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
   
+`
+
+const Top = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  p{
+    margin-right: 5%;
+  }
 `
